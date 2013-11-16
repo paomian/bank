@@ -1,0 +1,79 @@
+(ns bank.util
+  (:use
+    [hiccup core page]
+    [monger.operators]
+    [monger.core       :only [connect-via-uri!]]
+    [monger.collection :only [insert find-one-as-map update]]
+    [bank.template     :only [template]]
+    [noir.validation   :only [valid-number?]])
+  (:require
+    [ring.util.response           :as response]
+    [noir.session                 :as session]))
+(defn getuser [user] (find-one-as-map "user" {:user user}))
+(defn act [] (java.util.Date))
+(defn log [user action & expr] (insert "userlog" (merge {:time (act) :action action :user user} expr)))
+;;三种账户操作
+(defn db-in [value]
+  (let [user (session/get :user)]
+    (update "user" {:user user} {$inc {:value value}})))
+(defn db-out [value]
+  (let [user (session/get :user)]
+    (update "user" {:user user} {$inc {:value (- value)}})))
+(defn db-transfer [touser value]
+  (let [user (session/get :user)]
+    (update "user" {:user user} {$inc {:value (- value)}})
+    (update "user" {:user touser} {$inc {:value value}})))
+;;验证数字正确性
+(defn valid-num [number result]
+  (if (valid-number? number)
+    (if (< (Long/valueof number) (:value result))
+      (Long/valueof number)
+      false)
+    false))
+;;登录日志
+(defn log-login [user]
+  (log user "login" ))
+;;转账日志
+(defn log-transfer [usera userb value]
+  (log usera "transferout" {:value value})
+  (log userb "transferin" {:value value}))
+;;存钱日志
+(defn log-in [user value]
+  (log user "input" {:value value}))
+;;取钱日志
+(defn log-out [user value]
+  (log user "output" {:value value}))
+;;销户日志
+(defn log-bye [user]
+  (log user "bye"))
+;;注销日志
+(defn log-logout [user]
+  (log user "logout"))
+;;准备数据库
+(defn prepare-mongo []
+  (do
+    (connect-via-uri! "mongodb://bank:bank2013@127.0.0.1:27017/bank")))
+#_(defmacro is-auth? [& code]
+  `(let [(gensym user) user]
+     (if (user)
+       (do ~@code)
+       (response/redirect "/"))))
+(defmacro is-admin [& code]
+  `(if (= (session/get :admin) "admin")
+     (do ~@code)
+     (response/redirect "/")))
+(defmacro is-user [& code]
+  `(if (session/get :user)
+     (do ~@code)
+     (response/redirect "/")))
+(template index []
+          [:div.container-narrow
+           [:hr]
+           [:div.jumbotron
+            [:h2 "欢迎来到银行管理系统"]
+            (let [user (session/get :user)]
+              (if user
+                [:a.btn.btn-large.btn-danger {:href (str "/profile" )} "个人空间"]
+                (list
+                  [:a#login.btn.btn-large.btn-danger {:href "/login"} "登陆"]
+                  [:a.btn.btn-large.btn-danger {:href "/reg"} "注册"])))]])
