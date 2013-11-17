@@ -17,7 +17,7 @@
   (if (and (= pwd r-pwd)) 
     (do 
       (future 
-        (insert "user" {:_id (ObjectId.) :user user :nickname user :pwd (.encryptPassword (StrongPasswordEncryptor.) pwd) :email email :register-time (java.util.Date.) :value 0}))
+        (insert "user" {:_id (ObjectId.) :user user :nickname user :pwd (.encryptPassword (StrongPasswordEncryptor.) pwd) :email email :register-time (java.util.Date.) :value 0 :alive 1}))
       (response/redirect "/"))))
 (template register []
           [:div.container 

@@ -18,13 +18,13 @@
   ;;(GET "/transger" [] (transger-page))
   (POST "/transger" [touser value] (transger touser value))
   ;;(GET "/in" [] (in-page))
-  (POST "/in" [value] (in invalue))
+  (POST "/in" [invalue] (in invalue))
   ;;(GET "/out" [] (out-page))
-  (POST "/out" [value] (out outvalue))
+  (POST "/out" [outvalue] (out outvalue))
   ;;(GET "/:user" [user] (info-user))
   (GET "/profile" [] (show-profile))
-  ;;(GET "/log" [] (show-log))
-  ;;(GET "/bye" [] (bye))
+  (GET "/log" [] (show-log))
+  (GET "/bye" [] (bye))
   #_(context "/err" []
            (GET "/login-err" [] (login-err-page))
            (GET "/in-err" [] (in-err-page))
@@ -37,4 +37,5 @@
 (def app
   (->
     (handler/site app-routes)
-    (session/wrap-noir-session)))
+    (session/wrap-noir-session)
+    (session/wrap-noir-flash)))

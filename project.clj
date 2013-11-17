@@ -8,6 +8,7 @@
                  [hickory "0.5.1"]
                  [org.jasypt/jasypt "1.7"]
                  [ring/ring-core "1.2.1"]
+                 ;;[clj-time "0.6.0"]
                  [com.novemberain/monger "1.5.0"]]
   :plugins [[lein-ring "0.8.8"]]
   :ring {:handler bank.handler/app

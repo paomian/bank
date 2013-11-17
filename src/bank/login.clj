@@ -13,7 +13,9 @@
 (defn dologin [user pwd]
   (let [result (find-one-as-map "user" {:user user})]
     (if result
-      (if (.checkPassword (StrongPasswordEncryptor.) pwd  (result :pwd))
+      (if (and 
+            (.checkPassword (StrongPasswordEncryptor.) pwd  (result :pwd))
+            (= ((result :alive) 1)))
         (do 
           (update "user" {:user user}  {$set {:last-login (java.util.Date.)}})
           (session/put! :user user)
@@ -27,6 +29,12 @@
     (log-logout (session/get :user))
     (session/clear!)
     (response/redirect "/")))
+(defn bye []
+  (let [result (find-one-as-map "user" (:user (session/get :user)))]
+    (do
+      (update "user" {:user (result :user)} {$set {:alive 0}})
+      (session/clear!)
+      (response/redirect "/"))))
 (template login-page [] 
           [:div.container 
            [:form.form-signin {:method "POST" :action "/login"}
@@ -44,7 +52,7 @@
               [:td]
               [:td
                [:a {:href "/login/reset"} "密码重置"]]]]]])
-(template  login-err-page [] 
+#_(template  login-err-page [] 
           [:div.container 
            [:div {:class "alert"} 
             [:strong {} "Warning!"] "用户名或密码错误，请重行登录。"]

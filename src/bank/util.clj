@@ -3,15 +3,21 @@
     [hiccup core page]
     [monger.operators]
     [monger.core       :only [connect-via-uri!]]
-    [monger.collection :only [insert find-one-as-map update]]
+    [monger.collection :only [insert find-one-as-map update find-maps]]
     [bank.template     :only [template]]
     [noir.validation   :only [valid-number?]])
   (:require
     [ring.util.response           :as response]
-    [noir.session                 :as session]))
+    [noir.session                 :as session]
+    [monger.query                 :as mongo]))
 (defn getuser [user] (find-one-as-map "user" {:user user}))
-(defn act [] (java.util.Date))
-(defn log [user action & expr] (insert "userlog" (merge {:time (act) :action action :user user} expr)))
+(defn getuserlog [user] (mongo/with-collection "userlog" 
+                                         (mongo/find {:user user})
+                                         (mongo/sort {:time -1})))
+(defn act [] (java.util.Date.))
+(defn log
+  ([user action] (insert "userlog" {:time (act) :action action :user user}))
+  ([user action expr] (insert "userlog" (merge {:time (act) :action action :user user} expr))))
 ;;三种账户操作
 (defn db-in [value]
   (let [user (session/get :user)]
@@ -26,8 +32,8 @@
 ;;验证数字正确性
 (defn valid-num [number result]
   (if (valid-number? number)
-    (if (< (Long/valueof number) (:value result))
-      (Long/valueof number)
+    (if (<= (Long/valueOf number) (:value result))
+      (Long/valueOf number)
       false)
     false))
 ;;登录日志
