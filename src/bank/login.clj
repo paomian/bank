@@ -15,7 +15,7 @@
     (if result
       (if (and 
             (.checkPassword (StrongPasswordEncryptor.) pwd  (result :pwd))
-            (= ((result :alive) 1)))
+            (= (result :alive) 1))
         (do 
           (update "user" {:user user}  {$set {:last-login (java.util.Date.)}})
           (session/put! :user user)
@@ -71,3 +71,7 @@
               [:td]
               [:td
                [:a {:href "/login/reset"} "密码重置"]]]]]])
+(defn calculate [vectorr]
+  ((if (and (== (vectorr 0) 1) (== (vectorr 1) 1) (== (vectorr 2) 0))
+     1
+     0)))

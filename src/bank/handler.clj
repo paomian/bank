@@ -1,6 +1,6 @@
 (ns bank.handler
   (:use compojure.core
-        [bank.login            :only [dologin login-page dologout]]
+        [bank.login            :only [dologin login-page dologout bye]]
         [bank.register         :only [register doregister]]
         [bank.user]
         [bank.util             :only [index]])
