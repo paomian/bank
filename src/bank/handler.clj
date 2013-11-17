@@ -37,5 +37,5 @@
 (def app
   (->
     (handler/site app-routes)
-    (session/wrap-noir-session)
-    (session/wrap-noir-flash)))
+    (session/wrap-noir-flash)
+    (session/wrap-noir-session)))

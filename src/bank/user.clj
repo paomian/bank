@@ -13,8 +13,8 @@
              [:h3 {:class "text-center"} (str  (result :user) "欢迎来到银行管理系统")]
              [:p {:class "text-success text-center"}
               [:strong  "这里将为你提供基本的理财服务。"]]
-              (session/flash-get :errot)
-              (session/flash-get :success)
+             (session/flash-get :error)
+             (session/flash-get :success)
              [:table {:class "table table-hover table-condensed table-bordered"}
               [:thead 
                [:tr 
