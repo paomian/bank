@@ -76,10 +76,16 @@
           [:div.container-narrow
            [:hr]
            [:div.jumbotron
-            [:h2 "欢迎来到银行管理系统"]
+            [:h2 "欢迎来到银行管理!"]
+            [:br]
+            [:br]
+            [:br]
+            [:br]
+            [:br]
             (let [user (session/get :user)]
               (if user
                 [:a.btn.btn-large.btn-danger {:href (str "/profile" )} "个人空间"]
-                (list
-                  [:a#login.btn.btn-large.btn-danger {:href "/login"} "登陆"]
-                  [:a.btn.btn-large.btn-danger {:href "/reg"} "注册"])))]])
+                [:p
+                  [:a#login.btn.btn-large.btn-info {:href "/login"} "登陆"]
+                 "&nbsp;&nbsp;&nbsp;&nbsp;"
+                  [:a.btn.btn-large.btn-inverse {:href "/reg"} "注册"]]))]])

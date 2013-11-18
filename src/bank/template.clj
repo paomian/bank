@@ -22,8 +22,8 @@
           [:a.brand {:href "/"} "Bank"]
           [:ul.nav 
            [:li [:a {:href "/"} "主页"]]
-           [:li [:a {:href "http://sdutlinux.org/"} "技术支持"]]
-           [:li [:a {:href "http://gotit.asia/"} "got it"]]
+           ;;[:li [:a {:href "http://sdutlinux.org/"} "技术支持"]]
+           ;;[:li [:a {:href "http://gotit.asia/"} "got it"]]
            ]
           [:div.nav-collapse.collapse
            [:div.btn-group.pull-right

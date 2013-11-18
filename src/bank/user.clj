@@ -36,6 +36,7 @@
               [:button {:type "submit", :class "btn"} "取出"]]
              [:form {:class "form-inline" :method "POST" :action "/transger"}
               (text-field {:class "span3", :type "text", :placeholder "请输入转账金额(必须为数字)"} :value)
+              [:span "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
               (text-field {:class "span3", :type "text", :placeholder "请输入转入用户(账户用户名)"} :touser)
               [:button {:type "submit", :class "btn"} "转账"]]
              [:div {:class "row-fluid"}
